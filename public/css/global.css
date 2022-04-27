@@ -1,0 +1,139 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: lightgray;
+}
+
+input {
+	border: none;
+	padding: 5px;
+	font-size: 19px;
+}
+
+button {
+	border: none;
+	background-color: dodgerblue;
+	color: white;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 19px;
+}
+
+#searchres {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	max-width: 1200px;
+	margin: 0 auto;
+	gap: 10px;
+}
+
+#searchres > div {
+	background-color: white;
+	border: black 2px solid;
+	display: flex;
+	gap: 10px;
+}
+
+#searchres > div:hover {
+	background-color: rgb(255, 255, 46);
+	cursor: pointer;
+}
+
+#searchres > div > a {
+	color: black;
+}
+
+.badge {
+	background-color: dodgerblue;
+	color: white;
+	padding: 5px;
+	font-size: 10px;
+	border-radius: 5px;
+}
+
+.badge-holder {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	margin-right: 10px;
+}
+
+.content {
+	max-width: 1200px;
+	margin: 0 auto;
+	background-color: white;
+	padding: 10px;
+}
+
+.anime-info {
+	display: flex;
+	gap: 10px;
+}
+
+.anime-episodes {
+	display: grid;
+	grid-template-columns: 60% 40%;
+}
+
+.regular {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.regular > div {
+	border: 2px black solid;
+	padding: 10px;
+	height: 100px;
+	width: 400px;
+}
+
+.regular > div:hover {
+	background-color: rgb(255, 255, 46);
+	cursor: pointer;
+}
+
+.special {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.special > div {
+	border: 2px black solid;
+	padding: 10px;
+	height: 100px;
+	width: 400px;
+}
+
+.special > div:hover {
+	background-color: rgb(255, 255, 46);
+	cursor: pointer;
+}
+
+.episode-controls {
+	display: flex;
+	gap: 10px;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.episode-controls > a {
+	border: 1px dodgerblue solid;
+	background-color: dodgerblue;
+	padding: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	font-size: 17px;
+	border-radius: 5px;
+	color: white;
+}
+
+hr {
+	width: 100%;
+}
