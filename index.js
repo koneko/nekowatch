@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
-const scraper = require("./scraper");
+const scraper = require("./gogo");
 const fs = require("fs");
 app.use(express.static("public"));
 
@@ -13,6 +13,7 @@ const req = require("express/lib/request");
 app.get("/api/search", async (req, res) => {
 	const query = req.query.q;
 	let raw = await scraper.search(query);
+	console.log(raw)
 	res.json(raw);
 });
 
@@ -31,7 +32,7 @@ app.get("/api/image", async (req, res) => {
 });
 
 app.get("/api/video", async (req, res) => {
-	res.json(await scraper.getVideo(req.query.q));
+	res.json(await scraper.getSources(req.query.q));
 });
 
 app.get("/api/episodes", async (req, res) => {
@@ -42,9 +43,10 @@ app.get("/api/episodes", async (req, res) => {
 
 app.get("/anime/:title", async (req, res) => {
 	const title = req.params.title;
-	let data = await scraper.get(title);
+	let url = "/category/" + title
+	let data = await scraper.get(url);
 	let truetitle = toUpper(data.title.replace(/-/g, ""));
-	let image = await scraper.getImage(req.params.title);
+	let image = await scraper.getImage(url);
 	res.send(`
     <html lang="en">
 	<head>
@@ -79,11 +81,11 @@ app.get("/anime/:title", async (req, res) => {
     <div class="content">
     <div class="anime-info">
         <div class="anime-info-left">
-            <img referrerpolicy="no-referrer" src="https://animedao.to${image}" style="height:470px;"/>
+            <img referrerpolicy="no-referrer" src="${image}" style="height:470px;"/>
         </div>
         <div class="anime-info-right">
-            <h1>${truetitle}</h1>
-            <p>${data.synopsis}</p>
+            <h1>${data.title}</h1>
+            <p>${data.description}</p>
         </div>
     </div>
     <br>
@@ -92,17 +94,13 @@ app.get("/anime/:title", async (req, res) => {
             <h2>Regular</h2>
             <hr>
         </div>
-        <div class="special">
-            <h2>Special</h2>
-            <hr>
-        </div>
+
     </div>
     </div>
     </body>
     <script>
-    var episodes = ${JSON.stringify(data.episodes)};
-    var specials = ${JSON.stringify(data.specials)};
-    var title = "${req.params.title}";  
+    var episodes = ${data.episodes}
+    var title = "${req.params.title}";
     </script>
     <script src="../../js/episodeManager.js">
     </script>
@@ -110,63 +108,15 @@ app.get("/anime/:title", async (req, res) => {
     `);
 });
 
-app.get("/view/:title", async (req, res) => {
-	res.redirect("../../view/" + req.params.title);
-});
 
-app.get("/view/:title/:id", async (req, res) => {
-	try {
-		console.log(`xxxxxxxxxxxxx ${req.params.id}`);
-		let video = await scraper.getVideo(req.params.id);
-		let data = await scraper.get(req.params.title);
-		let image = await scraper.getImage(req.params.title);
-		let episode = {
-			number: null,
-			index: null,
-			prev: null,
-			next: null,
-			title: null,
-			subtitle: null,
-		};
-		data.episodes.forEach((item) => {
-			if (+item.id != +req.params.id) return;
-			episode.number = data.episodes.indexOf(item) + 1;
-			episode.index = data.episodes.indexOf(item);
-			if (item.index == 0) {
-				episode.prev = null;
-			} else {
-				episode.prev = data.episodes[episode.index - 1];
-			}
-			if (item.index == data.episodes.length) {
-				episode.next = null;
-			} else {
-				episode.next = data.episodes[episode.index + 1];
-			}
-			episode.title = item.title;
-			episode.subtitle = item.subtitle;
-			console.log(item.subtitle);
-		});
-		if (episode.number == null) {
-			data.specials.forEach((item) => {
-				if (+item.id != +req.params.id) return;
-				episode.number = data.specials.indexOf(item) + 1;
-				episode.index = data.specials.indexOf(item);
-				if (item.index == 0) {
-					episode.prev = null;
-				} else {
-					episode.prev = data.specials[episode.index - 1];
-				}
-				if (item.index == data.specials.length) {
-					episode.next = null;
-				} else {
-					episode.next = data.specials[episode.index + 1];
-				}
-				episode.title = item.title;
-				episode.subtitle = item.subtitle;
-				console.log(item.subtitle);
-			});
-		}
-		res.send(`
+app.get("/view/:title", async (req, res) => {
+	let title = req.params.title.split("-episode")[0];
+	let videos = await scraper.getSources("/" + req.params.title)
+	let url = "/category/" + title
+	let data = await scraper.get(url);
+	let image = await scraper.getImage(url);
+	let number = req.params.title.split("episode-")[1];
+	res.send(`
     <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -180,18 +130,18 @@ app.get("/view/:title/:id", async (req, res) => {
 		<link rel="stylesheet" href="../../../css/header.css" />
 		<link
 			rel="shortcut icon"
-			href="https://hub.koneko.link/cdn/icons/blue.png"
+			href="https://hub.koneko.link/cdn/icons/purple.png"
 			type="image/x-icon"
 		/>
-		<title>${episode.title} | neko watch ^-^</title>
+		<title>NekoWatch</title>
 	</head>
     <body>
     <div class="header">
-    <a href="../../../" class="logo"
+    <a href="../../" class="logo"
         >NekoWatch<span style="color: dodgerblue">;</span></a
     >
     <div class="header-right">
-        <a href="../../../" class="track">
+        <a href="../../" class="track">
             Home
         </a>
         <a href="http://track.koneko.link" class="track">Tracker</a>
@@ -201,11 +151,10 @@ app.get("/view/:title/:id", async (req, res) => {
     <div class="content">
     <div class="anime-info">
         <div class="anime-info-left">
-        <img referrerpolicy="no-referrer" src="https://animedao.to${image}" style="height:120px; width:90px;"/>
+        <img referrerpolicy="no-referrer" src="${image}" style="height:120px; width:90px;"/>
         </div>
         <div class="anime-info-right">
-            <h1>${episode.title}</h1>
-            <h3>${episode.subtitle}</h3>
+            <h1>${data.title} Episode ${number}</h1>
         </div>
     </div>
     <div class="episode-container" id="ep-cont" style="text-align:center">
@@ -215,22 +164,20 @@ app.get("/view/:title/:id", async (req, res) => {
 	</div>
     </body>
     <script>
-    var link = "${video.source}";
-    var episode = ${JSON.stringify(episode)}
-	var title = "${req.params.title}";
+	var title = "${title}";
+	var videos = ${JSON.stringify(videos)};
+	var number = ${number};
+	var max = ${data.episodes};
     </script>
-    <script src="../../../js/videoManager.js"></script>
+    <script src="/js/videoManager.js"></script>
     </html>
     `);
-	} catch (e) {
-		console.log(`error:  ${e.message}`);
-	}
 });
 //scrolling="no" frameborder="0" width="700" height="430" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
-function toUpper(str) {
+function toUpper (str) {
 	return str
 		.toLowerCase()
 		.split(" ")
@@ -240,7 +187,7 @@ function toUpper(str) {
 		.join(" ");
 }
 
-function getEpisode(array, filterid) {
+function getEpisode (array, filterid) {
 	data.episodes.forEach((item) => {
 		if (item.id != req.params.id) return;
 		episode.number = array.indexOf(item) + 1;

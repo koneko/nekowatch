@@ -134,6 +134,19 @@ button {
 	color: white;
 }
 
+.episode-sources > a {
+	border: 1px blueviolet solid;
+	background-color: blueviolet;
+	padding: 10px;
+	padding-left: 15px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-right: 15px;
+	font-size: 17px;
+	border-radius: 5px;
+	color: white;
+}
+
 hr {
 	width: 100%;
 }

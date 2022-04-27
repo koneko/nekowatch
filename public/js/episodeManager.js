@@ -1,20 +1,16 @@
-episodes.forEach((episode) => {
-	episode.url = episode.url.replace(" ", "");
+for (let i = 1; i <= episodes; i++) {
+	const episode = i;
 	let div = document.createElement("div");
-	div.setAttribute("onclick", `openEpisode("${episode.url}")`);
-	div.innerHTML = `<a href="..${episode.url}">${episode.title} - ${episode.subtitle}</a>`;
+	let url = `${title}-episode-${i}`
+	div.setAttribute("onclick", `openEpisode("${url}")`);
+	div.innerHTML = `<a href="/view/${url}">Episode ${i}</a>`;
 	document.querySelector(".regular").appendChild(div);
-});
+}
 
-specials.forEach((episode) => {
-	episode.url = episode.url.replace(" ", "");
-	let div = document.createElement("div");
-	div.setAttribute("onclick", `openEpisode("${episode.url}")`);
-	div.innerHTML = `<a href="..${episode.url}">${episode.title} - ${episode.subtitle}</a>`;
-	document.querySelector(".special").appendChild(div);
-});
 
-function openEpisode(iurl) {
-	let url = `..${iurl}`;
+
+
+function openEpisode (iurl) {
+	let url = `/view/${iurl}`;
 	location = url;
 }

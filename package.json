@@ -7,18 +7,14 @@
 	"bin": "index.js",
 	"scripts": {
 		"dev": "nodemon .",
-		"start": "node .",
-		"build": "pyinstaller -F scraper.py"
+		"start": "node ."
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"anime-vostfr": "^1.2.3",
-		"cloudscraper": "^4.6.0",
+		"cheerio": "^1.0.0-rc.10",
 		"express": "^4.17.3",
-		"html-dom-parser": "^1.1.0",
-		"node-html-parser": "^5.2.0",
-		"request": "^2.88.2"
+		"isomorphic-fetch": "^3.0.0"
 	}
 }

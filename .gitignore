@@ -3,3 +3,6 @@
 index-linux
 index-macos
 index-win.exe
+__pycache__
+build
+dist

@@ -30,14 +30,13 @@ function search (inid, outid, override) {
 			output.innerHTML = "";
 			data.forEach((item) => {
 				let div = document.createElement("div");
-				let title = item.title.replace(/ /g, "-");
+				let title = item.url.replace("/category/", "").replace("/", "");
 				div.innerHTML = `
                 <img referrerpolicy="no-referrer" src="${item.image
 					}" style="width:111px;height:156px;">
                 <div>
-                <h3><a href="/anime/${item.rawTitle}">${toUpper(
-						item.title
-					)}</a></h3>
+                <h3><a href="/anime/${title}">${item.title
+					}</a></h3>
                 </div>
                 `;
 				div.setAttribute(
@@ -45,7 +44,6 @@ function search (inid, outid, override) {
 					"window.location.href='/anime/" + title + "'"
 				);
 				output.appendChild(div);
-				let genres = item.genres;
 			});
 		});
 }
@@ -66,12 +64,12 @@ function popular (outid) {
 			output.innerHTML = "";
 			data.forEach((item) => {
 				let div = document.createElement("div");
-				let truetitle = item.rawTitle.split("Episode")[0];
+				let title = item.url.replace("/category/", "").replace("/", "");
 				div.innerHTML = `
                 
 				<img referrerpolicy="no-referrer" src="${item.image
 					}" style="width:100px;height:145px;">
-                <h3><a href=".?q=${truetitle}">${item.rawTitle}</a></h3>
+                <h3><a href=".?q=${item.title}">${item.title}</a></h3>
                 
                 `;
 
