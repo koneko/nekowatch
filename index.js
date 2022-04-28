@@ -5,10 +5,7 @@ const scraper = require("./gogo");
 const fs = require("fs");
 app.use(express.static("public"));
 
-const api = require("anime-vostfr");
-const cloudscraper = require("cloudscraper");
 const e = require("express");
-const req = require("express/lib/request");
 
 app.get("/api/search", async (req, res) => {
 	const query = req.query.q;
