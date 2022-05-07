@@ -108,3 +108,6 @@ function toUpper (str) {
 		})
 		.join(" ");
 }
+if (localStorage.nekowatchtoken) {
+	document.getElementById("logintracker").remove()
+}
