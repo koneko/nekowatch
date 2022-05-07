@@ -44,6 +44,6 @@ function changeSource (src) {
 async function hohol () {
 	if (!localStorage.nekowatchtoken) return
 	let res = await editItem(number, datatitle)
-	if (res == false) return alert("if you got this, an internal error happened, please send an issue on the github")
+	if (res == false) return
 }
 hohol()
