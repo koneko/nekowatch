@@ -39,12 +39,12 @@ app.get("/api/episodes", async (req, res) => {
 });
 
 app.get("/anime/:title", async (req, res) => {
-	const title = req.params.title;
-	let url = "/category/" + title
-	let data = await scraper.get(url);
-	let truetitle = toUpper(data.title.replace(/-/g, ""));
-	let image = await scraper.getImage(url);
-	res.send(`
+	try {
+		const title = req.params.title;
+		let url = "/category/" + title
+		let data = await scraper.get(url);
+		let image = await scraper.getImage(url);
+		res.send(`
     <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -58,15 +58,15 @@ app.get("/anime/:title", async (req, res) => {
 		<link rel="stylesheet" href="../../css/header.css" />
 		<link
 			rel="shortcut icon"
-			href="https://hub.koneko.link/cdn/icons/blue.png"
+			href="https://hub.koneko.link/cdn/icons/purple.png"
 			type="image/x-icon"
 		/>
-		<title>neko watch | ${data.title}</title>
+		<title>${data.title} | NekoWatch</title>
 	</head>
     <body>
     <div class="header">
     <a href="../../" class="logo"
-        >NekoWatch<span style="color: dodgerblue">;</span></a
+        >NekoWatch<span style="color: purple">;</span></a
     >
     <div class="header-right">
         <a href="../../" class="track">
@@ -78,7 +78,7 @@ app.get("/anime/:title", async (req, res) => {
     <div class="content">
     <div class="anime-info">
         <div class="anime-info-left">
-            <img referrerpolicy="no-referrer" src="${image}" style="height:470px;"/>
+            <img referrerpolicy="no-referrer" src="${image}" style="height:470px;" id="img-src"/>
         </div>
         <div class="anime-info-right">
             <h1>${data.title}</h1>
@@ -98,22 +98,29 @@ app.get("/anime/:title", async (req, res) => {
     <script>
     var episodes = ${data.episodes}
     var title = "${req.params.title}";
+	var datatitle = "${data.title}"
     </script>
+	<script src="/js/nekolist.js">
+	</script>
     <script src="../../js/episodeManager.js">
     </script>
     </html>
     `);
+	} catch (e) {
+		res.send(`server encountered error: ${e}`);
+	}
 });
 
 
 app.get("/view/:title", async (req, res) => {
-	let title = req.params.title.split("-episode")[0];
-	let videos = await scraper.getSources("/" + req.params.title)
-	let url = "/category/" + title
-	let data = await scraper.get(url);
-	let image = await scraper.getImage(url);
-	let number = req.params.title.split("episode-")[1];
-	res.send(`
+	try {
+		let title = req.params.title.split("-episode")[0];
+		let videos = await scraper.getSources("/" + req.params.title)
+		let url = "/category/" + title
+		let data = await scraper.get(url);
+		let image = await scraper.getImage(url);
+		let number = req.params.title.split("episode-")[1];
+		res.send(`
     <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -135,7 +142,7 @@ app.get("/view/:title", async (req, res) => {
     <body>
     <div class="header">
     <a href="../../" class="logo"
-        >NekoWatch<span style="color: dodgerblue">;</span></a
+        >NekoWatch<span style="color: purple">;</span></a
     >
     <div class="header-right">
         <a href="../../" class="track">
@@ -164,13 +171,27 @@ app.get("/view/:title", async (req, res) => {
 	var title = "${title}";
 	var videos = ${JSON.stringify(videos)};
 	var number = ${number};
+	var datatitle = "${data.title}";
 	var max = ${data.episodes};
     </script>
+	<script src="/js/nekolist.js"></script>
     <script src="/js/videoManager.js"></script>
     </html>
     `);
+	} catch (e) {
+		res.send(`server encountered error: ${e}`);
+	}
 });
 //scrolling="no" frameborder="0" width="700" height="430" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
+app.get("/login/callback", (req, res) => {
+	const token = req.query.token;
+	res.send(`
+	<script>
+		localStorage.setItem("nekowatchtoken", "${token}");
+		window.location.href = "/";
+	</script>
+	`)
+})
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 

@@ -16,7 +16,7 @@ input {
 
 button {
 	border: none;
-	background-color: dodgerblue;
+	background-color: purple;
 	color: white;
 	padding: 5px;
 	cursor: pointer;
@@ -149,4 +149,30 @@ button {
 
 hr {
 	width: 100%;
+}
+/* if page is viewed on phone, change video-src  */
+@media screen and (max-width: 800px) {
+	#main-video {
+		width: 360px;
+		height: 250px;
+		margin-right: 10px;
+	}
+	.episode-sources {
+		text-align: left;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	/* appropriately size anime info for mobile screens*/
+	.anime-info {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	/* appropriately size searchres for mobile screens*/
+	#searchres {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
 }

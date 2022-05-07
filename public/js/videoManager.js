@@ -1,5 +1,5 @@
 var container = document.getElementById("ep-cont");
-container.innerHTML = `<iframe id="main-video" src='${videos[0]}' scrolling='no' frameborder='0' width='770px;' height='442px;' allowfullscreen='true' webkitallowfullscreen='true' mozallowfullscreen='true'></iframe>`;
+container.innerHTML = `<iframe id="main-video" src='${videos[0]}' scrolling='no' frameborder='0' id="player-iframe" width='770px;' height='442px;' allowfullscreen='true' webkitallowfullscreen='true' mozallowfullscreen='true'></iframe>`;
 let controls = document.querySelector(".episode-controls");
 var sources = document.createElement("div")
 document.querySelector(".content").appendChild(document.createElement("br"))
@@ -29,6 +29,7 @@ videos.forEach(element => {
 	if (i > videos.length) return;
 	let a = document.createElement("a");
 	a.innerHTML = `Source ${i}`;
+	a.id = "source-element"
 	a.href = "#";
 	a.setAttribute("onclick", `changeSource('${element}')`);
 	sources.appendChild(a);
@@ -39,3 +40,10 @@ function changeSource (src) {
 	let main = document.getElementById("main-video");
 	main.src = src;
 }
+
+async function hohol () {
+	if (!localStorage.nekowatchtoken) return
+	let res = await editItem(number, datatitle)
+	if (res == false) return alert("if you got this, an internal error happened, please send an issue on the github")
+}
+hohol()
