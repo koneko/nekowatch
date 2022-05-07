@@ -72,6 +72,12 @@ app.get("/anime/:title", async (req, res) => {
         <a href="../../" class="track">
             Home
         </a>
+		<a style="margin: 0; padding: 6px; display: none" id="top-search">
+		<input type="text" placeholder="query..." id="input" />
+		<button onclick="searchURL()" id="submitbtn">
+			<i class="fa fa-search" style="width: 30px"></i>
+		</button>
+		</a>
         <a href="http://track.koneko.link" class="track">Tracker</a>
     </div>
     </div>
@@ -148,6 +154,12 @@ app.get("/view/:title", async (req, res) => {
         <a href="../../" class="track">
             Home
         </a>
+		<a style="margin: 0; padding: 6px; display: none" id="top-search">
+		<input type="text" placeholder="query..." id="input" />
+		<button onclick="searchURL()" id="submitbtn">
+			<i class="fa fa-search" style="width: 30px"></i>
+		</button>
+		</a>
         <a href="http://track.koneko.link" class="track">Tracker</a>
     </div>
     </div>

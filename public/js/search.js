@@ -109,5 +109,5 @@ function toUpper (str) {
 		.join(" ");
 }
 if (localStorage.nekowatchtoken) {
-	document.getElementById("logintracker").remove()
+	document.getElementById("trackerlogin").remove()
 }

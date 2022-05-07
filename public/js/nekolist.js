@@ -42,3 +42,9 @@ async function itemInfoName (name) {
     if (!item) return false
     return item
 }
+
+function searchURL () {
+    let url = document.getElementById("input").value
+    if (!url) return
+    location.href = '/?q=' + url
+}
