@@ -69,7 +69,13 @@ app.get("/anime/:title", async (req, res) => {
         >NekoWatch<span style="color: purple">;</span></a
     >
     <div class="header-right">
-        <a href="../../" class="track">
+		<a style="margin: 0; padding: 6px;" id="top-search">
+			<input type="text" placeholder="query..." id="input" />
+			<button onclick="outSearch()" id="submitbtn">
+				<i class="fa fa-search" style="width: 30px"></i>
+			</button>
+		</a>
+		<a href="../../" class="track">
             Home
         </a>
         <a href="http://track.koneko.link" class="track">Tracker</a>
@@ -104,6 +110,19 @@ app.get("/anime/:title", async (req, res) => {
 	</script>
     <script src="../../js/episodeManager.js">
     </script>
+	<script>
+	var input = document.getElementById("input").value;
+	function outSearch() {
+		if (input == "") return
+		window.location.href = "/?q=" + input
+	}
+	document.getElementById("input").addEventListener("keyup", function (event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			outSearch();
+		}
+	});
+	</script>
     </html>
     `);
 	} catch (e) {
@@ -145,6 +164,12 @@ app.get("/view/:title", async (req, res) => {
         >NekoWatch<span style="color: purple">;</span></a
     >
     <div class="header-right">
+		<a style="margin: 0; padding: 6px;" id="top-search">
+			<input type="text" placeholder="query..." id="input" />
+			<button onclick="outSearch()" id="submitbtn">
+				<i class="fa fa-search" style="width: 30px"></i>
+			</button>
+		</a>
         <a href="../../" class="track">
             Home
         </a>
@@ -167,9 +192,25 @@ app.get("/view/:title", async (req, res) => {
     <div class="episode-controls" style="text-align:center">
 	</div>
     </body>
+	<script>
+	var input = document.getElementById("input").value;
+	function outSearch() {
+		if (input == "") return
+		window.location.href = "/?q=" + input
+	}
+	document.getElementById("input").addEventListener("keyup", function (event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			outSearch();
+		}
+	});
+	</script>
     <script>
 	var title = "${title}";
-	var videos = ${JSON.stringify(videos)};
+	var videos;
+	var params = new URLSearchParams(window.location.search);
+	if(params.get("block") == "true") videos = [];
+	else videos = ${JSON.stringify(videos)};
 	var number = ${number};
 	var datatitle = "${data.title}";
 	var max = ${data.episodes};

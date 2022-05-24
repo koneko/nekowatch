@@ -1,13 +1,17 @@
 const params = new URLSearchParams(window.location.search);
 
 if (params.get("q")) {
-	search("invalid", "searchres", params.get("q"));
+	let override;
+	if (params.get("o") == "true") override = true
+	else override = false
+	search("invalid", "searchres", params.get("q"), true);
 } else {
 	popular("searchres")
 }
 
-function search (inid, outid, override) {
+function search (inid, outid, override, or) {
 	console.log("searching!");
+
 	let input;
 	if (inid == "invalid") {
 		input = override;
@@ -31,6 +35,11 @@ function search (inid, outid, override) {
 			data.forEach((item) => {
 				let div = document.createElement("div");
 				let title = item.url.replace("/category/", "").replace("/", "");
+				if (or == true) {
+					if (item.title == input) {
+						window.location.href = `/anime/${title}`
+					}
+				}
 				div.innerHTML = `
                 <img referrerpolicy="no-referrer" src="${item.image
 					}" style="width:111px;height:156px;">
@@ -69,7 +78,7 @@ function popular (outid) {
                 
 				<img referrerpolicy="no-referrer" src="${item.image
 					}" style="width:100px;height:145px;">
-                <h3><a href=".?q=${item.title}">${item.title}</a></h3>
+                <h3><a href=".?q=${item.title}&o=true">${item.title}</a></h3>
                 
                 `;
 
@@ -110,4 +119,14 @@ function toUpper (str) {
 }
 if (localStorage.nekowatchtoken) {
 	document.getElementById("trackerlogin").remove()
+	let a = document.createElement("a")
+	a.setAttribute("href", "#")
+	a.setAttribute("onclick", "logout()")
+	a.innerHTML = "Logout"
+	document.querySelector(".header-right").appendChild(a)
+}
+
+function logout () {
+	localStorage.removeItem("nekowatchtoken")
+	window.location.reload()
 }
