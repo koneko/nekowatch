@@ -1,6 +1,6 @@
 # neko-watch
 
-anime watching application, that scrapes from [https://animedao.to](https://animedao.to) <br>
+anime watching application, that scrapes from [gogoanime](https://gogoanime.sk) <br>
 doesnt do that much other than that it can
 
 ## features
@@ -13,8 +13,12 @@ doesnt do that much other than that it can
 >
 > Synopsis and Specials
 >
-> (Coming soon) Genres and other do dads and bits
-
+> Anime information
+> 
+> Integration with [NekoList](https://github.com/koneko/nekotracker)
 ### setup
 
-alright, so for setup, pretty simple \*\*just download from the [releases](https://github.com/koneko/neko-watch/releases) tab and follow the instructions there
+setup is very simple, a little bit of javascript knowledge is preferred  
+basically, if you want NekoList integration to be hosted on your own server, you need to setup your own server and  
+change the "base" variable in `nekolist.js` and the login url in `index.html` to your own server urls and it should be good  
+other than that just clone the repo, `npm i` and you good 
