@@ -9,6 +9,11 @@ if (params.get("q")) {
 	popular("searchres")
 }
 
+function querySearch () {
+	let query = document.getElementById("input").value
+	window.location.href = `/?q=${query}`
+}
+
 function search (inid, outid, override, or) {
 	console.log("searching!");
 
@@ -25,7 +30,7 @@ function search (inid, outid, override, or) {
 	if (document.getElementById("top-search").style.display == "none") {
 		document.getElementById("top-search").style.display = "block";
 	}
-
+	document.getElementById("input").value = input;
 	let qq = input.replace(/ /g, "+");
 	fetch("/api/search?q=" + qq)
 		.then((response) => response.json())
@@ -69,23 +74,27 @@ function popular (outid) {
 	fetch("/api/popular")
 		.then((response) => response.json())
 		.then((data) => {
-			console.log(data);
 			output.innerHTML = "";
 			data.forEach((item) => {
+				let url = "/view" + item.url
 				let div = document.createElement("div");
 				let title = item.url.replace("/category/", "").replace("/", "");
+				let episode = item.url.split("-episode-")[1]
+				let anime = "/anime" + item.url.split("-episode-")[0]
 				div.innerHTML = `
-                
-				<img referrerpolicy="no-referrer" src="${item.image
-					}" style="width:100px;height:145px;">
-                <h3><a href=".?q=${item.title}&o=true">${item.title}</a></h3>
-                
+				<img referrerpolicy="no-referrer" src="${item.image}" style="width:100px;height:145px;">
+                <h3><a href="${url}">${item.title} Episode ${episode}</a><a href="${anime}"><i class="fa-solid fa-eye eye-button"></i></a></h3>
                 `;
-
 				div.setAttribute("onclick", "");
 				output.appendChild(div);
-				let genres = item.genres;
 			});
+			//append more pages button
+			let div = document.createElement("div");
+			div.id = "searchdiv";
+			div.innerHTML = `
+			<button onclick="loadPage()" style="width: 100%; height: 100%;">More</button>
+			`;
+			output.appendChild(div);
 		});
 }
 

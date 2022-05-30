@@ -31,8 +31,9 @@ async function getImage (link) {
     return image
 }
 
-async function newEpisodes () {
-    let url = base
+async function newEpisodes (page) {
+    if (page == null) page = 1;
+    let url = `${base}?page=${page}`
     let raw = await fetch(url).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
@@ -42,10 +43,12 @@ async function newEpisodes () {
         let title = $(item).find('a').attr('title')
         let image = $(item).find('img').attr('src')
         let url = $(item).find('a').attr('href')
+        let animeUrl = url.split("-episode-")[0]
         let obj = {
             title,
             image,
-            url
+            url,
+            anime: "/category" + animeUrl
         }
         result.push(obj)
     }
@@ -60,14 +63,27 @@ async function get (link) {
     let title = $("h1").text()
     let image = $("div.anime_info_body_bg").children("img").attr("src")
     let description = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[1].next.data
+    let date = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[3].next.data
+    let altName = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[5].next.data
+    let d = $("div.anime_info_body_bg").children("p.type").find("a[title]").toArray()
+    //remove first element from d
+    d.shift()
+    let genres = []
+    for (let i = 0; i < d.length; i++) {
+        genres.push(d[i].attribs.title)
+    }
+    genres.pop()
     //get all numbers of videos
     let num = $(videos[videos.length - 1]).html().replace(/\s+/g, "").split("ep_end")[1].split(">")[0].replace(/"/g, "").replace("=", "")
     //compile all into obj
     let obj = {
         title,
+        alternative: altName,
         image,
         description,
-        episodes: num
+        episodes: num,
+        date,
+        genres,
     }
     return obj
 }
@@ -87,7 +103,7 @@ async function getSources (link) {
 }
 
 // async function test () {
-//     let results = await getSources('/date-a-live-episode-1')
+//     let results = await newEpisodes(1)
 //     console.log(results)
 // }
 

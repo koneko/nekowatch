@@ -150,6 +150,13 @@ button {
 hr {
 	width: 100%;
 }
+.eye-button {
+	border: none;
+	color: dodgerblue;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 19px;
+}
 /* if page is viewed on phone, change video-src  */
 @media screen and (max-width: 800px) {
 	#main-video {
@@ -174,5 +181,13 @@ hr {
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+	}
+	/* hide logo
+	.header a.logo {
+		display: none;
+	} */
+	/* hide tracker */
+	.header a.track {
+		display: none;
 	}
 }

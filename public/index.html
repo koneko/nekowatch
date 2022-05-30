@@ -25,12 +25,12 @@
 			<div class="header-right">
 				<a style="margin: 0; padding: 6px; display: none" id="top-search">
 					<input type="text" placeholder="query..." id="input" />
-					<button onclick="search('input', 'searchres')" id="submitbtn">
+					<button onclick="querySearch('input', 'searchres')" id="submitbtn">
 						<i class="fa fa-search" style="width: 30px"></i>
 					</button>
 				</a>
-				<a href="http://track.koneko.link" class="track">Tracker</a>
-					<a href="http://track.koneko.link/login?callback=http://watch.koneko.link/login/callback" class="track" id="trackerlogin">Login</a>
+				<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
+					<a href="http://track.koneko.link/login?callback=http://watch.koneko.link/login/callback" class="track" id="trackerlogin" style="display: block !important;">Login</a>
 			</div>
 		</div>
 		<div class="main" style="height: 100%; width: 100%">
@@ -59,6 +59,6 @@
 			<br />
 		</div>
 	</body>
-
 	<script src="./js/search.js"></script>
+	<script src="/js/page.js"></script>
 </html>

@@ -5,8 +5,6 @@ const scraper = require("./gogo");
 const fs = require("fs");
 app.use(express.static("public"));
 
-const e = require("express");
-
 app.get("/api/search", async (req, res) => {
 	const query = req.query.q;
 	let raw = await scraper.search(query);
@@ -15,8 +13,7 @@ app.get("/api/search", async (req, res) => {
 });
 
 app.get("/api/popular", async (req, res) => {
-	const query = req.query.q;
-	let raw = await scraper.newEpisodes(query);
+	let raw = await scraper.newEpisodes();
 	res.json(raw);
 });
 
@@ -38,12 +35,19 @@ app.get("/api/episodes", async (req, res) => {
 	res.json(raw);
 });
 
+app.get("/api/popularPage", async (req, res) => {
+	let page = req.query.page;
+	let raw = await scraper.newEpisodes(+page);
+	res.json(raw);
+});
+
 app.get("/anime/:title", async (req, res) => {
 	try {
 		const title = req.params.title;
 		let url = "/category/" + title
 		let data = await scraper.get(url);
 		let image = await scraper.getImage(url);
+		let genrecombined = data.genres.join(", ");
 		res.send(`
     <html lang="en">
 	<head>
@@ -88,7 +92,10 @@ app.get("/anime/:title", async (req, res) => {
         </div>
         <div class="anime-info-right">
             <h1>${data.title}</h1>
-            <p>${data.description}</p>
+            <p><b>Description: </b>${data.description}</p>
+			<p><b>Date: </b>${data.date}</p>
+			<p><b>Genres: </b>${genrecombined}</p>
+			<p><b>Alt: </b>${data.alternative}</p>
         </div>
     </div>
     <br>
@@ -111,8 +118,8 @@ app.get("/anime/:title", async (req, res) => {
     <script src="../../js/episodeManager.js">
     </script>
 	<script>
-	var input = document.getElementById("input").value;
 	function outSearch() {
+		var input = document.getElementById("input").value;
 		if (input == "") return
 		window.location.href = "/?q=" + input
 	}
@@ -183,7 +190,7 @@ app.get("/view/:title", async (req, res) => {
         <img referrerpolicy="no-referrer" src="${image}" style="height:120px; width:90px;"/>
         </div>
         <div class="anime-info-right">
-            <h1>${data.title} Episode ${number}</h1>
+            <h1>${data.title} Episode <span id="blocker">${number}</span></h1>
         </div>
     </div>
     <div class="episode-container" id="ep-cont" style="text-align:center">
@@ -193,8 +200,8 @@ app.get("/view/:title", async (req, res) => {
 	</div>
     </body>
 	<script>
-	var input = document.getElementById("input").value;
 	function outSearch() {
+		var input = document.getElementById("input").value;
 		if (input == "") return
 		window.location.href = "/?q=" + input
 	}
@@ -204,6 +211,9 @@ app.get("/view/:title", async (req, res) => {
 			outSearch();
 		}
 	});
+	document.getElementById("blocker").addEventListener("click", event => {
+		window.location.href = "?block=true"
+	})
 	</script>
     <script>
 	var title = "${title}";
@@ -232,6 +242,10 @@ app.get("/login/callback", (req, res) => {
 		window.location.href = "/";
 	</script>
 	`)
+})
+
+app.get("/gogo.js", (req, res) => {
+	res.send(fs.readFileSync("./gogo.js"))
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
