@@ -68,6 +68,11 @@ app.get("/anime/:title", async (req, res) => {
 			type="image/x-icon"
 		/>
 		<title>${data.title} | NekoWatch</title>
+		<meta property="og:title" content="${data.title} | NekoWatch" />
+		<meta name="description" content="${data.description}" />
+		<meta property="og:description" content="${data.description}" />
+		<meta property="og:image" content="${image}" />
+		<meta property="twitter:title" content="${data.title}" />
 	</head>
     <body>
     <div class="header">
@@ -179,6 +184,11 @@ app.get("/view/:title", async (req, res) => {
 			href="https://hub.koneko.link/cdn/icons/purple.png"
 			type="image/x-icon"
 		/>
+		<meta property="og:title" content="${data.title}" />
+		<meta name="description" content="${data.title} Episode ${number} on NekoWatch." />
+		<meta property="og:description" content="${data.description}" />
+		<meta property="og:image" content="${image}" />
+		<meta property="twitter:title" content="${data.title}" />
 		<title>NekoWatch</title>
 	</head>
     <body>
