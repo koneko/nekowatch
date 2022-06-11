@@ -144,11 +144,24 @@ app.get("/anime/:title", async (req, res) => {
 app.get("/view/:title", async (req, res) => {
 	try {
 		let title = req.params.title.split("-episode")[0];
-		let videos = await scraper.getSources("/" + req.params.title)
-		let url = "/category/" + title
-		let data = await scraper.get(url);
-		let image = await scraper.getImage(url);
-		let number = req.params.title.split("episode-")[1];
+		let videos, url, data, image, number, trytitle;
+		url = "/category/" + title
+		videos = await scraper.getSources("/" + req.params.title)
+		data = await scraper.get(url);
+		image = await scraper.getImage(url);
+		number = req.params.title.split("episode-")[1];
+		if (videos.length == 0) {
+			data = await scraper.get(url);
+			image = await scraper.getImage(url);
+			trytitle = data.title
+			//replace all spaces with -
+			trytitle = trytitle.replace(/\s+/g, "-");
+			//replace all uppercase with lowercase
+			trytitle = trytitle.toLowerCase();
+			trytitle = trytitle + "-episode-" + number
+			// console.log("trytitle " + trytitle)
+			videos = await scraper.getSources("/" + trytitle)
+		}
 		res.send(`
     <html lang="en">
 	<head>

@@ -64,10 +64,12 @@ async function get (link) {
     let image = $("div.anime_info_body_bg").children("img").attr("src")
     let description = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[1].next.data
     let date = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[3].next.data
+    let altName;
     try {
-        let altName = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[5].next.data
-    } catch (e) { altName = "N/A" }
-    console.log(altName)
+        altName = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[5].next.data
+    } catch (e) {
+        altName = "N/A"
+    }
     let d = $("div.anime_info_body_bg").children("p.type").find("a[title]").toArray()
     //remove first element from d
     d.shift()
@@ -97,13 +99,11 @@ async function getSources (link) {
     let $ = cheerio.load(raw)
     let videos = $('div.anime_muti_link').children().children().toArray()
     let result = []
-    console.log(videos.length)
     for (let i = 0; i < videos.length; i++) {
         let item = videos[i]
         let url = $(item).find('a').attr('data-video')
         result.push(url)
     }
-    console.log(result)
     return result
 }
 
