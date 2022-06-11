@@ -3,12 +3,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 const scraper = require("./gogo");
 const fs = require("fs");
+const { data } = require("cheerio/lib/api/attributes");
+const login = "http://track.koneko.link/login?callback=http://watch.koneko.link/login/callback"
 app.use(express.static("public"));
 
 app.get("/api/search", async (req, res) => {
 	const query = req.query.q;
 	let raw = await scraper.search(query);
-	console.log(raw)
 	res.json(raw);
 });
 
@@ -46,6 +47,7 @@ app.get("/anime/:title", async (req, res) => {
 		const title = req.params.title;
 		let url = "/category/" + title
 		let data = await scraper.get(url);
+		console.log(data)
 		let image = await scraper.getImage(url);
 		let genrecombined = data.genres.join(", ");
 		res.send(`
@@ -133,6 +135,7 @@ app.get("/anime/:title", async (req, res) => {
     </html>
     `);
 	} catch (e) {
+		console.log(e);
 		res.send(`server encountered error: ${e}`);
 	}
 });
@@ -242,6 +245,10 @@ app.get("/login/callback", (req, res) => {
 		window.location.href = "/";
 	</script>
 	`)
+})
+
+app.get("/login", (req, res) => {
+	res.redirect(login)
 })
 
 app.get("/gogo.js", (req, res) => {
