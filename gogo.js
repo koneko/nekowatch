@@ -60,24 +60,48 @@ async function get (link) {
     let raw = await fetch(url).then((res) => res.text())
     let $ = cheerio.load(raw)
     let videos = $('div.anime_video_body').children("#episode_page").children().toArray()
-    let title = $("h1").text()
-    let image = $("div.anime_info_body_bg").children("img").attr("src")
-    let description = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[1].next.data
-    let date = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[3].next.data
+    let title
+    try {
+        title = $("h1").text()
+    } catch (e) {
+        title = "N/A"
+    }
+    let image
+    try {
+        image = $("div.anime_info_body_bg").children("img").attr("src")
+    } catch (e) {
+        image = "https://hub.koneko.link/cdn/icons/black.png"
+    }
+    let description;
+    try {
+        description = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[1].next.data
+    } catch (e) {
+        description = "N/A"
+    }
+    let date
+    try {
+        date = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[3].next.data
+    } catch (e) {
+        date = "N/A"
+    }
     let altName;
     try {
         altName = $("div.anime_info_body_bg").children("p.type").find("span").toArray()[5].next.data
     } catch (e) {
         altName = "N/A"
     }
-    let d = $("div.anime_info_body_bg").children("p.type").find("a[title]").toArray()
-    //remove first element from d
-    d.shift()
     let genres = []
-    for (let i = 0; i < d.length; i++) {
-        genres.push(d[i].attribs.title)
+    try {
+        let d = $("div.anime_info_body_bg").children("p.type").find("a[title]").toArray()
+        //remove first element from d
+        d.shift()
+        for (let i = 0; i < d.length; i++) {
+            genres.push(d[i].attribs.title)
+        }
+        genres.pop()
+    } catch (e) {
+        genres = ["N/A"]
     }
-    genres.pop()
     //get all numbers of videos
     let num = $(videos[videos.length - 1]).html().replace(/\s+/g, "").split("ep_end")[1].split(">")[0].replace(/"/g, "").replace("=", "")
     //compile all into obj
@@ -107,8 +131,94 @@ async function getSources (link) {
     return result
 }
 
+async function getGenres () {
+    let raw = await fetch(base).then((res) => res.text())
+    let $ = cheerio.load(raw)
+    let result = []
+    let main = $('.genre').children().children().toArray()
+    for (let i = 0; i < main.length; i++) {
+        let item = main[i]
+        let title = $(item).find('a').attr('title')
+        let url = $(item).find('a').attr('href')
+        let obj = {
+            title,
+            url
+        }
+        result.push(obj)
+    }
+    return result
+}
+
+async function getAnimeFromGenre (link, page) {
+    if (page == null) page = 1;
+    let url = base + link
+    let raw = await fetch(url + "?page=" + page).then((res) => res.text())
+    let $ = cheerio.load(raw)
+    let result = []
+    let main = $('div.last_episodes').children().children().toArray()
+    for (let i = 0; i < main.length; i++) {
+        let item = main[i]
+        let title = $(item).find('a').attr('title')
+        let image = $(item).find('img').attr('src')
+        let url = $(item).find('a').attr('href')
+        let obj = {
+            title,
+            image,
+            url
+        }
+        result.push(obj)
+    }
+    return result
+}
+
+async function getSeasonAnime (page) {
+    if (page == null) page = 1;
+    let url = base + "new-season.html?page=" + page
+    let raw = await fetch(url).then((res) => res.text())
+    let $ = cheerio.load(raw)
+    let result = []
+    let main = $('div.last_episodes').children().children().toArray()
+    for (let i = 0; i < main.length; i++) {
+        let item = main[i]
+        let title = $(item).find('a').attr('title')
+        let image = $(item).find('img').attr('src')
+        let url = $(item).find('a').attr('href')
+        let obj = {
+            title,
+            image,
+            url
+        }
+        result.push(obj)
+    }
+    return result
+}
+
+async function showAnimeList (letter, page) {
+    let url
+    if (letter == null) url = base + "anime-list.html"
+    else url = base + "anime-list-" + letter.toUpperCase()
+
+    url += "?page=" + page
+    // console.log(url)
+    let raw = await fetch(url).then((res) => res.text())
+    let $ = cheerio.load(raw)
+    let result = []
+    let main = $('.listing').children().toArray()
+    for (let i = 0; i < main.length; i++) {
+        let item = main[i]
+        let title = $(item).find('a').text()
+        let url = $(item).find('a').attr('href')
+        let obj = {
+            title,
+            url
+        }
+        result.push(obj)
+    }
+    return result
+}
+
 // async function test () {
-//     let results = await newEpisodes(1)
+//     let results = await showAnimeList("Z", 1)
 //     console.log(results)
 // }
 
@@ -119,5 +229,9 @@ module.exports = {
     getImage,
     newEpisodes,
     get,
-    getSources
+    getSources,
+    getGenres,
+    getSeasonAnime,
+    getAnimeFromGenre,
+    showAnimeList
 }

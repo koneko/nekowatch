@@ -10,6 +10,7 @@
 		></script>
 		<link rel="stylesheet" href="./css/global.css" />
 		<link rel="stylesheet" href="./css/header.css" />
+		<link rel="stylesheet" href="/css/modal.css">
 		<link
 			rel="shortcut icon"
 			href="https://hub.koneko.link/cdn/icons/purple.png"
@@ -29,8 +30,8 @@
 						<i class="fa fa-search" style="width: 30px"></i>
 					</button>
 				</a>
-				<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
-					<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
+				<a href="javascript:void()" id="modalopenbtn">Extra</a>
+				<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
 			</div>
 		</div>
 		<div class="main" style="height: 100%; width: 100%">
@@ -58,7 +59,67 @@
 			</div>
 			<br />
 		</div>
+		<div id="myModal" class="modal">
+
+			<!-- Modal content -->
+			<div class="modal-content">
+			  <span class="close">&times;</span>
+			  <div class="modalcontent" style="text-align: center;">
+				<button id="modalbtn"><a href="http://track.koneko.link">Tracker</a></button>
+				<button id="modalbtn"><a href="/genres">Genres</a></button> 
+				<button id="modalbtn"><a href="/list">Anime List</a></button>
+				<button id="modalbtn"><a href="/season">Seasonal Anime</a></button>
+				<span>Created with 💖 by <a href="https://github.com/koneko">koneko</a></span>
+				<span>NekoWatch's code is <a href="https://github.com/koneko/nekowatch">open source</a> and you may use it freely.</span>
+				<span>Current version is <b>2.3.0</b></span>
+			</div>
+			</div>
+		  </div>
 	</body>
+	<style>
+		.modalcontent {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			gap: 15px;
+		}
+		#modalbtn {
+			padding: 15px;
+			padding-left:40px;
+			padding-right: 40px;
+		}
+		#modalbtn > a {
+			color: white;
+		}
+	</style>
+	<script>
+		// Get the modal
+		var modal = document.getElementById("myModal");
+		
+		// Get the button that opens the modal
+		var btn = document.getElementById("modalopenbtn");
+		
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+		
+		// When the user clicks the button, open the modal 
+		btn.onclick = function() {
+		  modal.style.display = "block";
+		}
+		
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
+		  modal.style.display = "none";
+		}
+		
+		// When the user clicks anywhere outside of the modal, close it
+		window.onclick = function(event) {
+		  if (event.target == modal) {
+			modal.style.display = "none";
+		  }
+		}
+		</script>
 	<script src="./js/search.js"></script>
 	<script src="/js/page.js"></script>
 </html>

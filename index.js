@@ -36,6 +36,14 @@ app.get("/api/episodes", async (req, res) => {
 	res.json(raw);
 });
 
+app.get("/api/genres/:genre", async (req, res) => {
+	let page = req.query.page;
+	if (page == null) page = 1;
+	let url = `/genre/${req.params.genre}`;
+	let data = await scraper.getAnimeFromGenre(url, page);
+	res.json(data);
+})
+
 app.get("/api/popularPage", async (req, res) => {
 	let page = req.query.page;
 	let raw = await scraper.newEpisodes(+page);
@@ -47,7 +55,6 @@ app.get("/anime/:title", async (req, res) => {
 		const title = req.params.title;
 		let url = "/category/" + title
 		let data = await scraper.get(url);
-		console.log(data)
 		let image = await scraper.getImage(url);
 		let genrecombined = data.genres.join(", ");
 		res.send(`
@@ -258,6 +265,182 @@ app.get("/view/:title", async (req, res) => {
 		res.send(`server encountered error: ${e}`);
 	}
 });
+
+app.get("/genres", async (req, res) => {
+	let genres = await scraper.getGenres();
+	res.send(`
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script
+		src="https://kit.fontawesome.com/11fc85fa63.js"
+		crossorigin="anonymous"
+	></script>
+	<link rel="stylesheet" href="/css/global.css" />
+	<link rel="stylesheet" href="/css/header.css" />
+	<link
+		rel="shortcut icon"
+		href="https://hub.koneko.link/cdn/icons/purple.png"
+		type="image/x-icon"
+	/>
+	<title>NekoWatch</title>
+</head>
+<body style="width: 100%; height: 100%">
+	<div class="header">
+		<a href="/" class="logo"
+			>NekoWatch<span style="color: purple">;</span></a
+		>
+		<div class="header-right">
+			<a style="margin: 0; padding: 6px;" id="top-search">
+				<input type="text" placeholder="query..." id="input" />
+				<button onclick="outSearch('input', 'searchres')" id="submitbtn">
+					<i class="fa fa-search" style="width: 30px"></i>
+				</button>
+			</a>
+			<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
+				<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
+		</div>
+	</div>
+	<div class="main" style="height: 100%; width: 100%">
+		<br />
+		<div id="searchres"></div>
+		<div style="text-align: center; height: 100%; width: 100%" id="searchdiv">
+			<br /><br /><br /><br /><br /><br /><br /><br />
+		</div>
+		<br />
+		<script>
+		function outSearch() {
+			var input = document.getElementById("input").value;
+			if (input == "") return
+			window.location.href = "/?q=" + input
+		}
+		document.getElementById("input").addEventListener("keyup", function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				outSearch();
+			}
+		});
+		</script>
+		<script>
+		let genres = ${JSON.stringify(genres)};
+		function generate() {
+			let arr = []
+			let searchres = document.getElementById("searchres");
+			searchres.innerHTML = "";
+			document.getElementById("searchdiv").style.display = "none";
+			genres.forEach(genre => {
+				//check if exists
+				let div = document.createElement("div");
+            	div.id = "searchdiv";
+            	div.innerHTML = \`<button onclick="document.getElementById('\$\{genre.title\}').click()" style="width: 100%; height: 120px;"><a href="\$\{genre.url\}" style="color:white;">\$\{genre.title\}</a></button>\`;
+            	document.getElementById("searchres").appendChild(div);
+			})
+		}
+		generate()
+		</script>
+	</div>
+</body>
+	`)
+})
+
+app.get("/genre/:genre", async (req, res) => {
+	try {
+		let genre = req.params.genre;
+		res.send(`
+		<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script
+			src="https://kit.fontawesome.com/11fc85fa63.js"
+			crossorigin="anonymous"
+		></script>
+		<link rel="stylesheet" href="/css/global.css" />
+		<link rel="stylesheet" href="/css/header.css" />
+		<link
+			rel="shortcut icon"
+			href="https://hub.koneko.link/cdn/icons/purple.png"
+			type="image/x-icon"
+		/>
+		<title>NekoWatch</title>
+	</head>
+	<body style="width: 100%; height: 100%">
+		<div class="header">
+			<a href="/" class="logo"
+				>NekoWatch<span style="color: purple">;</span></a
+			>
+			<div class="header-right">
+				<a style="margin: 0; padding: 6px;" id="top-search">
+					<input type="text" placeholder="query..." id="input" />
+					<button onclick="outSearch()" id="submitbtn">
+						<i class="fa fa-search" style="width: 30px"></i>
+					</button>
+				</a>
+				<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
+					<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
+			</div>
+		</div>
+		<div class="main" style="height: 100%; width: 100%">
+			<br />
+			<div id="searchres"></div>
+			<div style="text-align: center; height: 100%; width: 100%" id="searchdiv">
+				<br /><br /><br /><br /><br /><br /><br /><br />
+
+			</div>
+			<br />
+			<script>
+			function outSearch() {
+				var input = document.getElementById("input").value;
+				if (input == "") return
+				window.location.href = "/?q=" + input
+			}
+			document.getElementById("input").addEventListener("keyup", function (event) {
+				if (event.keyCode === 13) {
+					event.preventDefault();
+					outSearch();
+				}
+			});
+			</script>
+			<script>
+			let genre = "${genre}";
+			let page = 0;
+			async function loadPage () {
+				page++
+				fetch("/api/genres/${genre}?page=" + page).then(res => res.json())
+					.then(data => {
+						// remove button
+						document.getElementById("searchdiv").remove();
+						data.forEach(item => {
+							let url = "/anime" + item.url.replace("category/", "");
+							let div = document.createElement("div");
+							div.innerHTML = \`
+							<img referrerpolicy="no-referrer" src="\$\{item.image\}" style="width:100px;height:145px;">
+							<h3><a href="\$\{url\}">\$\{item.title\}</a></h3>
+							\`;
+							div.setAttribute("onclick", "");
+							document.getElementById("searchres").appendChild(div);
+						});
+						// append button
+						let div = document.createElement("div");
+						div.id = "searchdiv";
+						div.innerHTML = \`
+						<button onclick="loadPage()" style="width: 100%; height: 100%;">More</button>
+						\`;
+						document.getElementById("searchres").appendChild(div);
+					})
+			}
+			loadPage()
+			</script>
+		</div>
+	</body>
+		`)
+	} catch (e) {
+		res.send("server encountered error: " + e);
+	}
+
+})
+
 //scrolling="no" frameborder="0" width="700" height="430" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
 app.get("/login/callback", (req, res) => {
 	const token = req.query.token;
