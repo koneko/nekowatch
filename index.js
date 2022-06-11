@@ -185,8 +185,7 @@ app.get("/view/:title", async (req, res) => {
 			type="image/x-icon"
 		/>
 		<meta property="og:title" content="${data.title}" />
-		<meta name="description" content="${data.title} Episode ${number} on NekoWatch." />
-		<meta property="og:description" content="${data.description}" />
+		<meta name="og:description" content="${data.title} Episode ${number} on NekoWatch." />
 		<meta property="og:image" content="${image}" />
 		<meta property="twitter:title" content="${data.title}" />
 		<title>NekoWatch</title>
