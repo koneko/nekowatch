@@ -195,9 +195,8 @@ async function getSeasonAnime (page) {
 
 async function showAnimeList (letter, page) {
     let url
-    if (letter == null) url = base + "anime-list.html"
+    if (letter == "None") url = base + "anime-list.html"
     else url = base + "anime-list-" + letter.toUpperCase()
-
     url += "?page=" + page
     // console.log(url)
     let raw = await fetch(url).then((res) => res.text())

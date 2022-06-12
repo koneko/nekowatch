@@ -44,6 +44,22 @@ app.get("/api/genres/:genre", async (req, res) => {
 	res.json(data);
 })
 
+app.get("/api/season", async (req, res) => {
+	let page = req.query.page;
+	if (page == null) page = 1;
+	let raw = await scraper.getSeasonAnime(page)
+	res.json(raw);
+})
+
+app.get("/api/list", async (req, res) => {
+	let letter = req.query.letter;
+	let page = req.query.page;
+	if (page == null) page = 1;
+	if (letter == null) letter = "None";
+	let raw = await scraper.showAnimeList(letter, page);
+	res.json(raw);
+})
+
 app.get("/api/popularPage", async (req, res) => {
 	let page = req.query.page;
 	let raw = await scraper.newEpisodes(+page);
@@ -439,6 +455,230 @@ app.get("/genre/:genre", async (req, res) => {
 		res.send("server encountered error: " + e);
 	}
 
+})
+
+app.get("/season", async (req, res) => {
+	res.send(`
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script
+		src="https://kit.fontawesome.com/11fc85fa63.js"
+		crossorigin="anonymous"
+	></script>
+	<link rel="stylesheet" href="/css/global.css" />
+	<link rel="stylesheet" href="/css/header.css" />
+	<link
+		rel="shortcut icon"
+		href="https://hub.koneko.link/cdn/icons/purple.png"
+		type="image/x-icon"
+	/>
+	<title>NekoWatch</title>
+</head>
+<body style="width: 100%; height: 100%">
+	<div class="header">
+		<a href="/" class="logo"
+			>NekoWatch<span style="color: purple">;</span></a
+		>
+		<div class="header-right">
+			<a style="margin: 0; padding: 6px;" id="top-search">
+				<input type="text" placeholder="query..." id="input" />
+				<button onclick="outSearch()" id="submitbtn">
+					<i class="fa fa-search" style="width: 30px"></i>
+				</button>
+			</a>
+			<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
+				<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
+		</div>
+	</div>
+	<div class="main" style="height: 100%; width: 100%">
+		<br />
+		<div id="searchres"></div>
+		<div style="text-align: center; height: 100%; width: 100%" id="searchdiv">
+			<br /><br /><br /><br /><br /><br /><br /><br />
+
+		</div>
+		<br />
+		<script>
+		function outSearch() {
+			var input = document.getElementById("input").value;
+			if (input == "") return
+			window.location.href = "/?q=" + input
+		}
+		document.getElementById("input").addEventListener("keyup", function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				outSearch();
+			}
+		});
+		</script>
+		<script>
+		let page = 0;
+		async function loadPage () {
+			page++
+			fetch("/api/season?page=" + page).then(res => res.json())
+				.then(data => {
+					// remove button
+					document.getElementById("searchdiv").remove();
+					data.forEach(item => {
+						let url = "/anime" + item.url.replace("category/", "");
+						let div = document.createElement("div");
+						div.innerHTML = \`
+						<img referrerpolicy="no-referrer" src="\$\{item.image\}" style="width:100px;height:145px;">
+						<h3><a href="\$\{url\}">\$\{item.title\}</a></h3>
+						\`;
+						div.setAttribute("onclick", "");
+						document.getElementById("searchres").appendChild(div);
+					});
+					// append button
+					let div = document.createElement("div");
+					div.id = "searchdiv";
+					div.innerHTML = \`
+					<button onclick="loadPage()" style="width: 100%; height: 100%;">More</button>
+					\`;
+					document.getElementById("searchres").appendChild(div);
+				})
+		}
+		loadPage()
+		</script>
+	</div>
+</body>`)
+})
+
+app.get("/list", async (req, res) => {
+	res.send(`
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script
+		src="https://kit.fontawesome.com/11fc85fa63.js"
+		crossorigin="anonymous"
+	></script>
+	<link rel="stylesheet" href="/css/global.css" />
+	<link rel="stylesheet" href="/css/header.css" />
+	<link
+		rel="shortcut icon"
+		href="https://hub.koneko.link/cdn/icons/purple.png"
+		type="image/x-icon"
+	/>
+	<title>NekoWatch</title>
+</head>
+<style>
+#list-filter {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	margin-right: 25%;
+	margin-left: 25%;
+}
+.letter {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+</style>
+<body style="width: 100%; height: 100%">
+	<div class="header">
+		<a href="/" class="logo"
+			>NekoWatch<span style="color: purple">;</span></a
+		>
+		<div class="header-right">
+			<a style="margin: 0; padding: 6px;" id="top-search">
+				<input type="text" placeholder="query..." id="input" />
+				<button onclick="outSearch()" id="submitbtn">
+					<i class="fa fa-search" style="width: 30px"></i>
+				</button>
+			</a>
+			<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
+				<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
+		</div>
+	</div>
+	<div class="main" style="height: 100%; width: 100%">
+		<br />
+		<div id="list-filter">
+		</div>
+		<br />
+		<div id="searchres"></div>
+		<br />
+		<script>
+		function outSearch() {
+			var input = document.getElementById("input").value;
+			if (input == "") return
+			window.location.href = "/?q=" + input
+		}
+		document.getElementById("input").addEventListener("keyup", function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				outSearch();
+			}
+		});
+		</script>
+		<script>
+		let page = 0;
+		let letterToSend = "None";
+		function createLetterButtons() {
+			let container = document.getElementById("list-filter")
+			//for every letter in the alphabet
+			let a = document.createElement("a");
+			a.innerHTML = "All";
+			a.href = "javascript:setLetter('None')";
+			a.className = "letter";
+			container.appendChild(a);
+			let b = document.createElement("a");
+			b.innerHTML = "#";
+			b.href = "javascript:setLetter('0')";
+			b.className = "letter";
+			container.appendChild(b);
+			for (let i = 65; i <= 90; i++) {
+				let letter = String.fromCharCode(i);
+				let a = document.createElement("a");
+				a.innerHTML = letter.toUpperCase();
+				a.href = "javascript:setLetter('" + letter + "')";
+				a.className = "letter";
+				container.appendChild(a);
+			}
+		}
+		function setLetter(letter) {
+			letterToSend = letter;
+			page = 0;
+			document.getElementById("searchres").innerHTML = "";
+			loadPage()
+		}
+		async function loadPage () {
+			page++
+			fetch(\`/api/list?letter=\$\{letterToSend\}&page=\$\{page\}\`).then(res => res.json())
+				.then(data => {
+					// remove button
+					if(document.getElementById("searchbuttonthing")) document.getElementById("searchbuttonthing").remove();
+					data.forEach(item => {
+						let url = "/anime" + item.url.replace("category/", "");
+						let div = document.createElement("div");
+						div.id = "searchdiv";
+						div.style.border = "none"
+						div.style.padding = "20px"
+						div.innerHTML = \`
+						<a href="\$\{url\}" style="width: 100%; height: 100%;">\$\{item.title\}</a>
+						\`;
+						document.getElementById("searchres").appendChild(div);
+					});
+					// append button
+					let div = document.createElement("div");
+					div.id = "searchbuttonthing";
+					div.innerHTML = \`
+					<button onclick="loadPage()" style="width: 100%; height: 100%;">More</button>
+					\`;
+					document.getElementById("searchres").appendChild(div);
+				})
+		}
+		createLetterButtons();
+		loadPage()
+		</script>
+	</div>
+</body>`)
 })
 
 //scrolling="no" frameborder="0" width="700" height="430" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
