@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const base = "https://gogoanime.sk/"
+const base = "https://gogoanime.lu/"
 require("isomorphic-fetch")
 
 async function search (query) {
