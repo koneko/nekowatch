@@ -24,6 +24,22 @@ async function editItem (episode, title) {
     }
 }
 
+async function editStatus (title, state) {
+    let token = localStorage.getItem("nekowatchtoken");
+    if (!token) return false
+    let list = await getList()
+    console.log(list)
+    let item = list.find(item => item.name == title)
+    if (!item) return false
+    let id = item.id
+    let res = await fetch(`${base}/editStatus?token=${token}&id=${id}&state=${state}`)
+    if (await res.text() == "ok") {
+        return true
+    } else {
+        return false
+    }
+}
+
 async function addItem (name, src, episode) {
     let token = localStorage.getItem("nekowatchtoken");
     if (!token) return alert("no log in uwu")

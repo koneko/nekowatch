@@ -211,7 +211,7 @@ app.get("/view/:title", async (req, res) => {
 		<meta name="og:description" content="${data.title} Episode ${number} on NekoWatch." />
 		<meta property="og:image" content="${image}" />
 		<meta property="twitter:title" content="${data.title}" />
-		<title>NekoWatch</title>
+		<title>Episode ${number} of ${data.title} | NekoWatch</title>
 	</head>
     <body>
     <div class="header">
@@ -474,7 +474,7 @@ app.get("/season", async (req, res) => {
 		href="https://hub.koneko.link/cdn/icons/purple.png"
 		type="image/x-icon"
 	/>
-	<title>NekoWatch</title>
+	<title>Seasonal Anime | NekoWatch</title>
 </head>
 <body style="width: 100%; height: 100%">
 	<div class="header">
@@ -563,7 +563,7 @@ app.get("/list", async (req, res) => {
 		href="https://hub.koneko.link/cdn/icons/purple.png"
 		type="image/x-icon"
 	/>
-	<title>NekoWatch</title>
+	<title>Anime List | NekoWatch</title>
 </head>
 <style>
 #list-filter {
