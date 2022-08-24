@@ -681,6 +681,82 @@ app.get("/list", async (req, res) => {
 </body>`)
 })
 
+app.get('/more', (req, res) => {
+	res.send("not done")
+	return
+	res.send(`
+	<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script
+		src="https://kit.fontawesome.com/11fc85fa63.js"
+		crossorigin="anonymous"
+	></script>
+	<link rel="stylesheet" href="/css/global.css" />
+	<link rel="stylesheet" href="/css/header.css" />
+	<link
+		rel="shortcut icon"
+		href="https://hub.koneko.link/cdn/icons/purple.png"
+		type="image/x-icon"
+	/>
+	<title>Anime List | NekoWatch</title>
+</head>
+<style>
+#list-filter {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	margin-right: 25%;
+	margin-left: 25%;
+}
+.letter {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+* {
+	overflow:hidden;
+}
+</style>
+<body style="width: 100%; height: 100%;">
+	<div class="header">
+		<a href="/" class="logo"
+			>NekoWatch<span style="color: purple">;</span></a
+		>
+		<div class="header-right">
+			<a style="margin: 0; padding: 6px;" id="top-search">
+				<input type="text" placeholder="query..." id="input" />
+				<button onclick="outSearch()" id="submitbtn">
+					<i class="fa fa-search" style="width: 30px"></i>
+				</button>
+			</a>
+			<a href="http://track.koneko.link" class="track" style="display: block !important;">Tracker</a>
+				<a href="/login" class="track" id="trackerlogin" style="display: block !important;">Login</a>
+		</div>
+	</div>
+	<div class="main" style="height: 100%; width: 100%;">
+		<iframe src="http://127.0.0.1:5500/index.html?q=${req.query.query}" width="100%" height="100%"></iframe>
+		<script>
+		function outSearch() {
+			var input = document.getElementById("input").value;
+			if (input == "") return
+			window.location.href = "/?q=" + input
+		}
+		document.getElementById("input").addEventListener("keyup", function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				outSearch();
+			}
+		});
+		</script>
+	</div>
+</body>
+	`)
+})
+
 //scrolling="no" frameborder="0" width="700" height="430" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
 app.get("/login/callback", (req, res) => {
 	const token = req.query.token;

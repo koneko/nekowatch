@@ -1,6 +1,6 @@
 # neko-watch
 
-anime watching application, that scrapes from [gogoanime.lu](https://gogoanime.lu/) <br>
+anime watching application, that scrapes from [gogoanime.ee](https://gogoanime.ee/) <br>
 doesnt do that much other than that it can
 
 ## features

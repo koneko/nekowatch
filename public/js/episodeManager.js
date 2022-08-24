@@ -33,6 +33,10 @@ async function podarok () {
 		btn.setAttribute("onclick", `addItemExtra()`);
 		container.appendChild(btn);
 	}
+	let div = document.createElement("div");
+	let container = document.querySelector(".anime-info-right")
+	div.innerHTML = `<button style="padding-left: 20px;padding-right:20px;margin-top: 10px;" onclick="seeMore()">More Information</button>`
+	container.appendChild(div);
 }
 podarok()
 
@@ -77,4 +81,8 @@ async function editInformationFinish () {
 	} else {
 		return alert("no item found?? report to koneko on github (check out home page extras for that)")
 	}
+}
+
+function seeMore () {
+	window.location.href = "/more?query=" + datatitle
 }
