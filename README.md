@@ -1,5 +1,5 @@
 # neko-watch
-
+# repository is not kept up to date, if you want to, feel free to, it has moved to [nekowatch-new](https://github.com/koneko/nekowatch-new)
 anime watching application, that scrapes from [gogoanime.ee](https://gogoanime.ee/) <br>
 doesnt do that much other than that it can
 
