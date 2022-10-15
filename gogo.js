@@ -4,7 +4,7 @@ require("isomorphic-fetch")
 
 async function search (query) {
     let url = base + "search.html?keyword=" + query
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
     let main = $('div.last_episodes').children().children().toArray()
@@ -25,7 +25,7 @@ async function search (query) {
 
 async function getImage (link) {
     let url = base + link
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let image = $('div.anime_info_body').find('img').attr('src')
     return image
@@ -34,7 +34,7 @@ async function getImage (link) {
 async function newEpisodes (page) {
     if (page == null) page = 1;
     let url = `${base}?page=${page}`
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
     let main = $('div.last_episodes').children().children().toArray()
@@ -57,7 +57,7 @@ async function newEpisodes (page) {
 
 async function get (link) {
     let url = base + link
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let videos = $('div.anime_video_body').children("#episode_page").children().toArray()
     let title
@@ -119,7 +119,7 @@ async function get (link) {
 
 async function getSources (link) {
     let url = base + link
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let videos = $('div.anime_muti_link').children().children().toArray()
     let result = []
@@ -132,7 +132,7 @@ async function getSources (link) {
 }
 
 async function getGenres () {
-    let raw = await fetch(base).then((res) => res.text())
+    let raw = await fetch(base, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
     let main = $('.genre').children().children().toArray()
@@ -152,7 +152,7 @@ async function getGenres () {
 async function getAnimeFromGenre (link, page) {
     if (page == null) page = 1;
     let url = base + link
-    let raw = await fetch(url + "?page=" + page).then((res) => res.text())
+    let raw = await fetch(url + "?page=" + page, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
     let main = $('div.last_episodes').children().children().toArray()
@@ -174,7 +174,7 @@ async function getAnimeFromGenre (link, page) {
 async function getSeasonAnime (page) {
     if (page == null) page = 1;
     let url = base + "new-season.html?page=" + page
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
     let main = $('div.last_episodes').children().children().toArray()
@@ -199,7 +199,7 @@ async function showAnimeList (letter, page) {
     else url = base + "anime-list-" + letter.toUpperCase()
     url += "?page=" + page
     // console.log(url)
-    let raw = await fetch(url).then((res) => res.text())
+    let raw = await fetch(url, {redirect: "follow"}).then((res) => res.text())
     let $ = cheerio.load(raw)
     let result = []
     let main = $('.listing').children().toArray()
